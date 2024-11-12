@@ -28,14 +28,14 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     - name: Run Tests
-      run: ./gradlew test
+      run: ./gradlew test --info
 
     - name: Publish Test Results
       if: always()
       uses: dorny/test-reporter@v1
       with:
         name: JUnit Tests
-        path: build/test-results/test
+        path: '**/build/test-results/test/TEST-*.xml'
         reporter: java-junit
         fail-on-error: true
     - name: Upload Test Report
@@ -43,7 +43,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-report
-        path: build/reports/tests/test/
+        path: |                    # 여러 경로 지정
+          **/build/reports/tests/test/
+          **/build/test-results/test/
         retention-days: 30
     - name: Notify on Failure
       if: failure()
