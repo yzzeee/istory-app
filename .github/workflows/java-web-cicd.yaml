@@ -17,7 +17,7 @@ permissions:
   contents: read
   checks: write    # 테스트 결과 보고를 위한 권한
   pull-requests: write   # PR에 코멘트를 달 수 있는 권한
-  
+
 jobs:
   build:
 
@@ -57,6 +57,7 @@ jobs:
         path: '**/build/test-results/test/TEST-*.xml'
         reporter: java-junit
         fail-on-error: true
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v4
