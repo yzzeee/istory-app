@@ -13,6 +13,11 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+  checks: write    # 테스트 결과 보고를 위한 권한
+  pull-requests: write   # PR에 코멘트를 달 수 있는 권한
+  
 jobs:
   build:
 
