@@ -84,7 +84,7 @@ jobs:
             echo "| Severity | Rule | Description | File |" >> $GITHUB_STEP_SUMMARY
             echo "|----------|------|-------------|------|" >> $GITHUB_STEP_SUMMARY
             
-            jq -r '.runs[].results[] | select(.properties?.["security-severity"] or .ruleId) | "| \(.properties?.["security-severity"] // "medium") | \(.ruleId // "N/A") | \(.message.text // "N/A") | \(.locations[0].physicalLocation.artifactLocation.uri):\(.locations[0].physicalLocation.region.startLine) |"' sarif-results/java.sarif >> $GITHUB_STEP_SUMMARY || true
+            jq -r '.runs[].results[] | "| \(.properties.security_severity // "medium") | \(.ruleId // "N/A") | \(.message.text // "N/A") | \(.locations[0].physicalLocation.artifactLocation.uri):\(.locations[0].physicalLocation.region.startLine) |"' sarif-results/java.sarif >> $GITHUB_STEP_SUMMARY || true
           else
             echo "No results found in SARIF file." >> $GITHUB_STEP_SUMMARY
           fi
