@@ -73,15 +73,15 @@ jobs:
 
     - name: Generate CodeQL Summary
       run: |
-        echo "# CodeQL Analysis Results" >> $GITHUB_STEP_SUMMARY
-        echo "## Security Alerts" >> $GITHUB_STEP_SUMMARY
+        echo "# 파이프라인 리포트" >> $GITHUB_STEP_SUMMARY
+        echo "## 보안 경고" >> $GITHUB_STEP_SUMMARY
         
         if [ -f sarif-results/java.sarif ]; then
           if jq -e '.runs[0].results' sarif-results/java.sarif > /dev/null 2>&1; then
             ALERTS=$(jq '.runs[].results | length' sarif-results/java.sarif)
             echo "Found ${ALERTS} potential security issues." >> $GITHUB_STEP_SUMMARY
             
-            echo "### Alert Details" >> $GITHUB_STEP_SUMMARY
+            echo "### 보안 경고 상세" >> $GITHUB_STEP_SUMMARY
             echo "| Severity | Rule | Description | File |" >> $GITHUB_STEP_SUMMARY
             echo "|----------|------|-------------|------|" >> $GITHUB_STEP_SUMMARY
             
