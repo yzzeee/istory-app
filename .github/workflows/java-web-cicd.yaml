@@ -42,10 +42,12 @@ jobs:
 
     - name: Generate list using Markdown
       run: |
-        echo "This is the lead in sentence for the list" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY # this is a blank line
-        echo "- Triggered by: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
-        echo "- Triggered by: ${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
+        echo "## Workflow Execution Information" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "* Triggered by: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+        echo "* Event type: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "* Repository: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+        echo "* Ref: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v4
