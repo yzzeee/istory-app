@@ -76,16 +76,20 @@ jobs:
         echo "## Security Alerts" >> $GITHUB_STEP_SUMMARY
         
         if [ -f sarif-results/java.sarif ]; then
-          ALERTS=$(jq '.runs[].results | length' sarif-results/java.sarif)
-          echo "Found ${ALERTS} potential security issues." >> $GITHUB_STEP_SUMMARY
-          
-          echo "### Alert Details" >> $GITHUB_STEP_SUMMARY
-          echo "| Severity | Rule | Description | File |" >> $GITHUB_STEP_SUMMARY
-          echo "|----------|------|-------------|------|" >> $GITHUB_STEP_SUMMARY
-          
-          jq -r '.runs[].results[] | "| \(.properties.security-severity // "medium") | \(.ruleId) | \(.message.text) | \(.locations[0].physicalLocation.artifactLocation.uri):\(.locations[0].physicalLocation.region.startLine) |"' sarif-results/java.sarif >> $GITHUB_STEP_SUMMARY
+          if jq -e '.runs[0].results' sarif-results/java.sarif > /dev/null 2>&1; then
+            ALERTS=$(jq '.runs[].results | length' sarif-results/java.sarif)
+            echo "Found ${ALERTS} potential security issues." >> $GITHUB_STEP_SUMMARY
+            
+            echo "### Alert Details" >> $GITHUB_STEP_SUMMARY
+            echo "| Severity | Rule | Description | File |" >> $GITHUB_STEP_SUMMARY
+            echo "|----------|------|-------------|------|" >> $GITHUB_STEP_SUMMARY
+            
+            jq -r '.runs[].results[] | select(.properties?.["security-severity"] or .ruleId) | "| \(.properties?.["security-severity"] // "medium") | \(.ruleId // "N/A") | \(.message.text // "N/A") | \(.locations[0].physicalLocation.artifactLocation.uri):\(.locations[0].physicalLocation.region.startLine) |"' sarif-results/java.sarif >> $GITHUB_STEP_SUMMARY || true
+          else
+            echo "No results found in SARIF file." >> $GITHUB_STEP_SUMMARY
+          fi
         else
-          echo "No SARIF results found." >> $GITHUB_STEP_SUMMARY
+          echo "No SARIF results file found." >> $GITHUB_STEP_SUMMARY
         fi
 
 
