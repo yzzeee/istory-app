@@ -38,7 +38,9 @@ jobs:
         distribution: 'temurin'
 
     - name: Run Checkstyle
-      run: ./gradlew checkstyleMain checkstyleTest
+      run: |
+        mkdir -p build/reports/checkstyle
+        ./gradlew checkstyleMain checkstyleTest
     
     # - uses: unsafecoerce/chatgpt-action@main
     #   env:
@@ -101,8 +103,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: checkstyle-report
-        path: |
-          **/build/reports/checkstyle/
+        path: build/reports/checkstyle/
         retention-days: 14
 
 
