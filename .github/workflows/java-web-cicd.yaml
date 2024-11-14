@@ -11,7 +11,7 @@ jobs:
     permissions:
       contents: read
       actions: read
-      checks: write    # 테스트 결과 보고를 위한 권한2
+      checks: write    # 테스트 결과 보고를 위한 권한3
     runs-on: ubuntu-latest
     services:
       mysql:
