@@ -6,8 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-
-
 jobs:
   build:
     permissions:
@@ -42,22 +40,12 @@ jobs:
       # run: ./gradlew test --info
       run: ./gradlew test
 
-    # - name: Publish Test Results
-    #   if: always()
-    #   uses: dorny/test-reporter@v1
-    #   with:
-    #     name: JUnit Tests
-    #     path: '**/build/test-results/test/TEST-*.xml'
-    #     reporter: java-junit
-    #     fail-on-error: true
-    #     token: ${{ secrets.MY_GITHUB_TOKEN }}
     - name: Generate list using Markdown
       run: |
         echo "This is the lead in sentence for the list" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY # this is a blank line
-        echo "- Lets add a bullet point" >> $GITHUB_STEP_SUMMARY
-        echo "- Lets add a second bullet point" >> $GITHUB_STEP_SUMMARY
-        echo "- How about a third one?" >> $GITHUB_STEP_SUMMARY
+        echo "- Triggered by: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Triggered by: ${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v4
