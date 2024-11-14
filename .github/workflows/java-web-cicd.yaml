@@ -48,7 +48,7 @@ jobs:
           **/build/reports/checkstyle/
         retention-days: 14
 
-        
+
     - name: Run test java
       # run: ./gradlew test --info
       run: ./gradlew test
@@ -61,6 +61,14 @@ jobs:
         echo "* Event type: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
         echo "* Repository: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
         echo "* Brach: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
+        echo "## Checkstyle Analysis Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ -f build/reports/checkstyle/main.xml ]; then
+          echo "### Main Source Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat build/reports/checkstyle/main.xml >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        fi
 
     - name: Upload Test Report
       if: always()
