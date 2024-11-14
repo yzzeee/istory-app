@@ -48,6 +48,7 @@ jobs:
         action: review
         review_comment_lgtm: true
         path_filters: |
+          .*
           \.java$
           \.gradle$
           \.xml$
