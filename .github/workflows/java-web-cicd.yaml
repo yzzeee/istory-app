@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: write
-  checks: write    # 테스트 결과 보고를 위한 권한
+  checks: write    # 테스트 결과 보고를 위한 권한1
   pull-requests: write
 
 jobs:
