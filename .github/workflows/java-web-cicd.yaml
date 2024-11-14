@@ -12,9 +12,8 @@ jobs:
   build:
     permissions:
       contents: read
+      actions: read
       checks: write    # 테스트 결과 보고를 위한 권한2
-      pull-requests: write
-      id-token: write
     runs-on: ubuntu-latest
     services:
       mysql:
