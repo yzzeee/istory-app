@@ -6,15 +6,15 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: write
+  checks: write    # 테스트 결과 보고를 위한 권한
+  pull-requests: write
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    # permissions:
-    #   contents: read
-    #   checks: write    # 테스트 결과 보고를 위한 권한
-    #   pull-requests: write
-
     services:
       mysql:
         image: mysql:8.0
