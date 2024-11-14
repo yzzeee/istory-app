@@ -7,9 +7,10 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: write
+  contents: read
   checks: write    # 테스트 결과 보고를 위한 권한1
   pull-requests: write
+  id-token: write
 
 jobs:
   build:
