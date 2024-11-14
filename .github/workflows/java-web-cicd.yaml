@@ -42,15 +42,15 @@ jobs:
       # run: ./gradlew test --info
       run: ./gradlew test
 
-    - name: Publish Test Results
-      if: always()
-      uses: dorny/test-reporter@v1
-      with:
-        name: JUnit Tests
-        path: '**/build/test-results/test/TEST-*.xml'
-        reporter: java-junit
-        fail-on-error: true
-        token: ${{ secrets.MY_GITHUB_TOKEN }}
+    # - name: Publish Test Results
+    #   if: always()
+    #   uses: dorny/test-reporter@v1
+    #   with:
+    #     name: JUnit Tests
+    #     path: '**/build/test-results/test/TEST-*.xml'
+    #     reporter: java-junit
+    #     fail-on-error: true
+    #     token: ${{ secrets.MY_GITHUB_TOKEN }}
 
     - name: Upload Test Report
       if: always()
