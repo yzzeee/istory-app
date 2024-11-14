@@ -35,7 +35,14 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-
+    - name: Run Checkstyle
+      uses: nikitasavinov/checkstyle-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        reporter: 'github-pr-review'
+        tool_name: 'checkstyle'
+        level: 'warning'
+        fail_on_error: true
     - name: Run test java
       # run: ./gradlew test --info
       run: ./gradlew test
@@ -47,7 +54,7 @@ jobs:
         echo "* Triggered by: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
         echo "* Event type: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
         echo "* Repository: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
-        echo "* Ref: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
+        echo "* Brach: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v4
