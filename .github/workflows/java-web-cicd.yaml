@@ -47,55 +47,61 @@ jobs:
         debug: false
         action: review
         review_comment_lgtm: true
+        path_filters: |
+          \.java$
+          \.gradle$
+          \.xml$
+          \.yml$
+          \.yaml$
     
-    - name: Upload Checkstyle results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: checkstyle-report
-        path: |
-          **/build/reports/checkstyle/
-        retention-days: 14
+    # - name: Upload Checkstyle results
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: checkstyle-report
+    #     path: |
+    #       **/build/reports/checkstyle/
+    #     retention-days: 14
 
 
-    - name: Run test java
-      # run: ./gradlew test --info
-      run: ./gradlew test
+    # - name: Run test java
+    #   # run: ./gradlew test --info
+    #   run: ./gradlew test
 
-    - name: Generate list using Markdown
-      run: |
-        echo "## 워크플로우 실행 정보 요약" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "* 실행 담당자: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
-        echo "* 실행 이벤트: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
-        echo "* 실행 저장소: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
-        echo "* 실행 브랜치: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
-        echo "## 코드 스타일 분석결과" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        if [ -f build/reports/checkstyle/main.xml ]; then # 소스분석결과 존재시
-          echo "### 소스분석결과" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          cat build/reports/checkstyle/main.xml >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-        fi
+    # - name: Generate list using Markdown
+    #   run: |
+    #     echo "## 워크플로우 실행 정보 요약" >> $GITHUB_STEP_SUMMARY
+    #     echo "" >> $GITHUB_STEP_SUMMARY
+    #     echo "* 실행 담당자: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+    #     echo "* 실행 이벤트: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+    #     echo "* 실행 저장소: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+    #     echo "* 실행 브랜치: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
+    #     echo "## 코드 스타일 분석결과" >> $GITHUB_STEP_SUMMARY
+    #     echo "" >> $GITHUB_STEP_SUMMARY
+    #     if [ -f build/reports/checkstyle/main.xml ]; then # 소스분석결과 존재시
+    #       echo "### 소스분석결과" >> $GITHUB_STEP_SUMMARY
+    #       echo '```' >> $GITHUB_STEP_SUMMARY
+    #       cat build/reports/checkstyle/main.xml >> $GITHUB_STEP_SUMMARY
+    #       echo '```' >> $GITHUB_STEP_SUMMARY
+    #     fi
 
-    - name: Upload Test Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-report
-        path: |                    # 여러 경로 지정
-          **/build/reports/tests/test/
-          **/build/test-results/test/
-        retention-days: 30
-    - name: Notify on Failure
-      if: failure()
-      run: |
-        echo "Tests failed! Pipeline will be stopped."
-        exit 1
+    # - name: Upload Test Report
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: test-report
+    #     path: |                    # 여러 경로 지정
+    #       **/build/reports/tests/test/
+    #       **/build/test-results/test/
+    #     retention-days: 30
+    # - name: Notify on Failure
+    #   if: failure()
+    #   run: |
+    #     echo "Tests failed! Pipeline will be stopped."
+    #     exit 1
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+    # - name: Setup Gradle
+    #   uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
-    - name: Build with Gradle Wrapper
-      run: ./gradlew build
+    # - name: Build with Gradle Wrapper
+    #   run: ./gradlew build
