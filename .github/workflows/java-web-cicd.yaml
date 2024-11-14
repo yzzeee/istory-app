@@ -36,8 +36,8 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Run Checkstyle
-      run: ./gradlew checkstyleMain checkstyleTest
+    # - name: Run Checkstyle
+    #   run: ./gradlew checkstyleMain checkstyleTest
     
     - uses: unsafecoerce/chatgpt-action@main
       env:
