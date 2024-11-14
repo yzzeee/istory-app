@@ -40,7 +40,9 @@ jobs:
     - name: Run Checkstyle
       run: |
         mkdir -p build/reports/checkstyle
-        ./gradlew checkstyleMain checkstyleTest
+        ./gradlew checkstyleMain checkstyleTest --info
+        ls -la build/reports/checkstyle || true
+        pwd
     
     # - uses: unsafecoerce/chatgpt-action@main
     #   env:
