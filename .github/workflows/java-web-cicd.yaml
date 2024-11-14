@@ -38,7 +38,16 @@ jobs:
 
     - name: Run Checkstyle
       run: ./gradlew checkstyleMain checkstyleTest
-
+    
+    - uses: unsafecoerce/chatgpt-action@main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GTOKEN }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      with:
+        debug: false
+        action: review
+        review_comment_lgtm: true
+    
     - name: Upload Checkstyle results
       if: always()
       uses: actions/upload-artifact@v4
@@ -63,7 +72,7 @@ jobs:
         echo "* 실행 브랜치: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
         echo "## 코드 스타일 분석결과" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        if [ -f build/reports/checkstyle/main.xml ]; then
+        if [ -f build/reports/checkstyle/main.xml ]; then # 소스분석결과 존재시
           echo "### 소스분석결과" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           cat build/reports/checkstyle/main.xml >> $GITHUB_STEP_SUMMARY
