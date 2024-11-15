@@ -73,6 +73,8 @@ jobs:
     - name: Build and Run Spring Boot
       run: |
         ./gradlew build
+    - name: Build and Run Spring Boot
+      run: |
         nohup java -jar build/libs/*.jar &
         sleep 10  # 애플리케이션이 완전히 시작될 때까지 대기
     - name: Install k6
