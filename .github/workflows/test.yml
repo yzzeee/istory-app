@@ -7,6 +7,7 @@ on:
     branches: [ "develop","main" ]
 jobs:
   verify-pipeline:
+    environment: runner
     runs-on: ubuntu-latest
     services:
       mysql:
