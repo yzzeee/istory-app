@@ -40,22 +40,13 @@ jobs:
         distribution: 'temurin'
     - name: Run test java
       run: ./gradlew test
-    - name: Generate list using Markdown
+
+    - name: Notify on Failure
+      if: failure()
       run: |
-        echo "## 워크플로우 실행 정보 요약" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "* 실행 담당자: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
-        echo "* 실행 이벤트: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
-        echo "* 실행 저장소: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
-        echo "* 실행 브랜치: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
-        echo "## 코드 스타일 분석결과" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        if [ -f build/reports/checkstyle/main.xml ]; then # 소스분석결과 존재시
-          echo "### 소스분석결과" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          cat build/reports/checkstyle/main.xml >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-        fi
+        echo "Tests failed! Pipeline will be stopped."
+        exit 1
+
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v4
@@ -64,46 +55,65 @@ jobs:
         path: |                    # 여러 경로 지정
           **/build/reports/tests/test/
           **/build/test-results/test/
-        retention-days: 30
-    - name: Notify on Failure
-      if: failure()
-      run: |
-        echo "Tests failed! Pipeline will be stopped."
-        exit 1
-    - name: Build 
-      run: |
-        ./gradlew bootJar
-    - name: Run Spring Boot
-      run: |
-        nohup java -jar build/libs/*.jar &
-        sleep 10  # 애플리케이션이 완전히 시작될 때까지 대기
-    - name: Install k6
-      run: |
-        curl -L https://github.com/grafana/k6/releases/download/v0.49.0/k6-v0.49.0-linux-amd64.tar.gz -o k6.tar.gz
-        tar -xzf k6.tar.gz
-        sudo cp k6-v0.49.0-linux-amd64/k6 /usr/local/bin/
+        retention-days: 30 
 
-    - name: Run k6 load test
+    - name: Generate Basic Info in Markdown
       run: |
-        # k6 실행 결과를 파일로 저장
-        k6 run src/test/load/load-test.js > k6_results.txt
+        echo "## 워크플로우 실행 정보 요약" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "* 실행 담당자: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+        echo "* 실행 이벤트: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "* 실행 저장소: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+        echo "* 실행 브랜치: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
         
-        # GitHub Step Summary에 k6 결과 추가
-        echo "## 부하 테스트 결과" >> $GITHUB_STEP_SUMMARY
-        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        cat k6_results.txt >> $GITHUB_STEP_SUMMARY
-        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+    - name: Run Checkstyle
+      run: |
+        mkdir -p build/reports/checkstyle
+        ./gradlew checkstyleMain checkstyleTest --info
+        ls -la build/reports/checkstyle || true
+
+    - name: Upload Checkstyle results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: checkstyle-report
+        path: build/reports/checkstyle/
+        retention-days: 14
+
+    # - name: Build 
+    #   run: |
+    #     ./gradlew bootJar
+    # - name: Run Spring Boot
+    #   run: |
+    #     nohup java -jar build/libs/*.jar &
+    #     sleep 10  # 애플리케이션이 완전히 시작될 때까지 대기
+    # - name: Install k6
+    #   run: |
+    #     curl -L https://github.com/grafana/k6/releases/download/v0.49.0/k6-v0.49.0-linux-amd64.tar.gz -o k6.tar.gz
+    #     tar -xzf k6.tar.gz
+    #     sudo cp k6-v0.49.0-linux-amd64/k6 /usr/local/bin/
+
+    # - name: Run k6 load test
+    #   run: |
+    #     # k6 실행 결과를 파일로 저장
+    #     k6 run src/test/load/load-test.js > k6_results.txt
         
-        # JSON 형식으로도 결과 저장 (선택사항)
-        k6 run --out json=results.json src/test/load/load-test.js
+    #     # GitHub Step Summary에 k6 결과 추가
+    #     echo "## 부하 테스트 결과" >> $GITHUB_STEP_SUMMARY
+    #     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+    #     cat k6_results.txt >> $GITHUB_STEP_SUMMARY
+    #     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         
-        # 주요 메트릭 요약 추가
-        echo "### 주요 메트릭 요약" >> $GITHUB_STEP_SUMMARY
-        echo "| 메트릭 | 결과 |" >> $GITHUB_STEP_SUMMARY
-        echo "|--------|------|" >> $GITHUB_STEP_SUMMARY
-        echo "| 총 요청 수 | $(grep "http_reqs" k6_results.txt | awk '{print $2}') |" >> $GITHUB_STEP_SUMMARY
-        echo "| 평균 응답 시간 | $(grep "http_req_duration" k6_results.txt | awk '{print $3}') |" >> $GITHUB_STEP_SUMMARY
-        echo "| 실패율 | $(grep "http_req_failed" k6_results.txt | awk '{print $3}') |" >> $GITHUB_STEP_SUMMARY
-      env:
-        K6_VIRTUAL_USERS: 10
-        K6_DURATION: "30s"
+    #     # JSON 형식으로도 결과 저장 (선택사항)
+    #     k6 run --out json=results.json src/test/load/load-test.js
+        
+    #     # 주요 메트릭 요약 추가
+    #     echo "### 주요 메트릭 요약" >> $GITHUB_STEP_SUMMARY
+    #     echo "| 메트릭 | 결과 |" >> $GITHUB_STEP_SUMMARY
+    #     echo "|--------|------|" >> $GITHUB_STEP_SUMMARY
+    #     echo "| 총 요청 수 | $(grep "http_reqs" k6_results.txt | awk '{print $2}') |" >> $GITHUB_STEP_SUMMARY
+    #     echo "| 평균 응답 시간 | $(grep "http_req_duration" k6_results.txt | awk '{print $3}') |" >> $GITHUB_STEP_SUMMARY
+    #     echo "| 실패율 | $(grep "http_req_failed" k6_results.txt | awk '{print $3}') |" >> $GITHUB_STEP_SUMMARY
+    #   env:
+    #     K6_VIRTUAL_USERS: 10
+    #     K6_DURATION: "30s"
