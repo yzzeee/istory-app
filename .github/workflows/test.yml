@@ -70,10 +70,10 @@ jobs:
       run: |
         echo "Tests failed! Pipeline will be stopped."
         exit 1
-    - name: Build and Run Spring Boot
+    - name: Build 
       run: |
         ./gradlew bootJar
-    - name: Build and Run Spring Boot
+    - name: Run Spring Boot
       run: |
         nohup java -jar build/libs/*.jar &
         sleep 10  # 애플리케이션이 완전히 시작될 때까지 대기
