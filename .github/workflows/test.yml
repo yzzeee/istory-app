@@ -1,4 +1,4 @@
-# 2
+# 3
 name: istory ci/cd pipeline
 
 permissions:
@@ -173,6 +173,7 @@ jobs:
           echo "| 🎯 버킷 | \`${{ secrets.AWS_S3_BUCKET }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| 📄 파일명 | \`${{ env.ARTIFACT_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| 🕒 배포 시각 | $(date) |" >> $GITHUB_STEP_SUMMARY
+      
     # - name: Build 
     #   run: |
     #     ./gradlew bootJar
