@@ -31,7 +31,7 @@ resource "aws_codedeploy_deployment_group" "istory-deploy_group" {
     ec2_tag_filter {
       key   = "Environment"
       type  = "KEY_AND_VALUE"
-      value = "Production"
+      value = "Development"
     }
   }
 
