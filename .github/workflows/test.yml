@@ -103,7 +103,7 @@ jobs:
         echo "|--------|------|" >> $GITHUB_STEP_SUMMARY
         echo "| 총 요청 수 | $(grep "http_reqs" k6_results.txt | awk '{print $2}') |" >> $GITHUB_STEP_SUMMARY
         echo "| 평균 응답 시간 | $(grep "http_req_duration" k6_results.txt | awk '{print $3}') |" >> $GITHUB_STEP_SUMMARY
-        echo "| 실패율 | $(grep "http_req_failed" k6_results.txt | awk '{print $2}') |" >> $GITHUB_STEP_SUMMARY
+        echo "| 실패율 | $(grep "http_req_failed" k6_results.txt | awk '{print $3}') |" >> $GITHUB_STEP_SUMMARY
       env:
         K6_VIRTUAL_USERS: 10
         K6_DURATION: "30s"

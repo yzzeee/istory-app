@@ -15,7 +15,7 @@ export default function () {
   
   check(response, {
     'is status 200': (r) => r.status === 200,
-    'response time < 20ms': (r) => r.timings.duration < 500,
+    'response time < 500ms': (r) => r.timings.duration < 500,
   });
 
   sleep(1);  // 각 요청 사이에 1초 대기
