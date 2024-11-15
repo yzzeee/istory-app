@@ -70,6 +70,8 @@ jobs:
       run: |
         echo "Tests failed! Pipeline will be stopped."
         exit 1
+    - name: list dir
+      run: ls -al
     - name: Install k6
       run: |
         curl -L https://github.com/grafana/k6/releases/download/v0.49.0/k6-v0.49.0-linux-amd64.tar.gz -o k6.tar.gz
