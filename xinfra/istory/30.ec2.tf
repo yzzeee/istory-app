@@ -36,10 +36,11 @@ resource "aws_instance" "dev_istory_nginx_instance" {
                 systemctl start codedeploy-agent
                 systemctl enable codedeploy-agent
 
-                # JDK 17 설치
-                amazon-linux-extras enable java-openjdk17
-                yum install -y java-17-openjdk-devel
-               
+                # JDK 17 설치 (Amazon Corretto)
+                cd /tmp
+                wget https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.rpm
+                yum install -y amazon-corretto-17-x64-linux-jdk.rpm
+
                 # Java 버전 확인
                 echo "Installed Java version:"
                 java -version
