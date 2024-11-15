@@ -89,7 +89,52 @@ jobs:
           cat build/reports/checkstyle/main.xml >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
         fi
-
+        - name: Generate Checkstyle Summary
+        if: always()
+        run: |
+          echo "## 코드 스타일 분석 요약" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f build/reports/checkstyle/main.xml ]; then
+            # 전체 파일 수 계산
+            TOTAL_FILES=$(grep -c "<file name=" build/reports/checkstyle/main.xml)
+            # 경고가 있는 파일 수 계산
+            FILES_WITH_WARNINGS=$(grep -c "<file name=.*>.*<error" build/reports/checkstyle/main.xml)
+            # 전체 경고 수 계산
+            TOTAL_WARNINGS=$(grep -c "<error" build/reports/checkstyle/main.xml)
+            
+            echo "### 📊 통계" >> $GITHUB_STEP_SUMMARY
+            echo "| 항목 | 개수 |" >> $GITHUB_STEP_SUMMARY
+            echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+            echo "| 검사한 파일 수 | ${TOTAL_FILES} |" >> $GITHUB_STEP_SUMMARY
+            echo "| 경고가 있는 파일 수 | ${FILES_WITH_WARNINGS} |" >> $GITHUB_STEP_SUMMARY
+            echo "| 전체 경고 수 | ${TOTAL_WARNINGS} |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # 경고 유형별 통계
+            echo "### 🔍 경고 유형별 통계" >> $GITHUB_STEP_SUMMARY
+            echo "| 경고 유형 | 발생 횟수 |" >> $GITHUB_STEP_SUMMARY
+            echo "|-----------|------------|" >> $GITHUB_STEP_SUMMARY
+            grep "<error" build/reports/checkstyle/main.xml | sed 's/.*message="\([^"]*\).*/\1/' | sort | uniq -c | sort -nr | \
+            while read count message; do
+              echo "| ${message} | ${count} |" >> $GITHUB_STEP_SUMMARY
+            done
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # 가장 많은 경고가 있는 파일들
+            echo "### 📁 주의가 필요한 파일" >> $GITHUB_STEP_SUMMARY
+            echo "| 파일 경로 | 경고 수 |" >> $GITHUB_STEP_SUMMARY
+            echo "|------------|----------|" >> $GITHUB_STEP_SUMMARY
+            awk '/<file name="[^"]+">/{file=$0; count=0; while(getline && !/<\/file>/){count++}} count>0{print file,count}' build/reports/checkstyle/main.xml | \
+            sort -k2 -nr | head -5 | \
+            while read line; do
+              FILE=$(echo $line | sed 's/.*name="\([^"]*\).*/\1/' | sed 's/.*cwave-cicd-start\///')
+              COUNT=$(echo $line | awk '{print $NF}')
+              echo "| ${FILE} | ${COUNT} |" >> $GITHUB_STEP_SUMMARY
+            done
+          else
+            echo "⚠️ Checkstyle 분석 결과 파일을 찾을 수 없습니다." >> $GITHUB_STEP_SUMMARY
+          fi
     # - name: Build 
     #   run: |
     #     ./gradlew bootJar
