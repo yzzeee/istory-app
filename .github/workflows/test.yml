@@ -192,7 +192,7 @@ jobs:
       - name: Create deployment package
         run: |
           mkdir -p deployment
-          cp build/libs/*.jar deployment/${{ env.ARTIFACT_NAME }}.jar
+          cp build/libs/*.jar deployment/${{ env.ARTIFACT_NAME }}
           cp appspec.yml deployment/
           cp -r scripts deployment/
           cd deployment && zip -r ../deploy.zip .          
@@ -200,9 +200,9 @@ jobs:
       - name: Upload to S3
         run: |
           # JAR 파일 업로드
-          aws s3 cp deployment/${{ env.ARTIFACT_NAME }}.jar s3://${{ secrets.AWS_S3_BUCKET }}/artifacts/
+          aws s3 cp deployment/${{ env.ARTIFACT_NAME }} s3://${{ secrets.AWS_S3_BUCKET }}/artifacts/
           # 배포 패키지 업로드
-          aws s3 cp deploy.zip s3://${{ secrets.AWS_S3_BUCKET }}/deploy/${{ env.ARTIFACT_NAME }}.zip
+          aws s3 cp deploy.zip s3://${{ secrets.AWS_S3_BUCKET }}/deploy/deploy.zip
           
       - name: Generate deployment summary
         run: |
@@ -235,7 +235,7 @@ jobs:
           DEPLOYMENT_ID=$(aws deploy create-deployment \
             --application-name istory-app \
             --deployment-group-name istory-deploy-group \
-            --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},key=deploy/${{ env.ARTIFACT_NAME }}.zip,bundleType=zip \
+            --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},key=deploy/deploy.zip,bundleType=zip \
             --output text \
             --query 'deploymentId')
           echo "deployment_id=${DEPLOYMENT_ID}" >> $GITHUB_OUTPUT
