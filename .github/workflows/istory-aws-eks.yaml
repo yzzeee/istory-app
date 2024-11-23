@@ -106,9 +106,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: yzzeee/istory-service  
-          ref: main
-          path: .
-          token: ${{ secrets.PAT }} 
+          path: service-repo  # 별도의 디렉토리에 체크아웃
+          token: ${{ secrets.PAT }}
+          fetch-depth: 0  # 전체 히스토리 가져오기
       
       # 이미지 태그 업데이트
       - name: 11.쿠버네티스 매니페스트 파일 이미지 태그 업데이트
