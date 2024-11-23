@@ -125,10 +125,7 @@ jobs:
         run: |
           git config --global user.name "yeonji.lee"
           git config --global user.email "goooooodgood@gmail.com"
-          git config -l  # 설정 확인
-          git remote -v  # remote 확인
-          echo "Current branch: $(git branch --show-current)"  # 현재 브랜치 확인
-          git status  # 상태 확인
           git commit -am "Update image tag to ${{ env.DOCKER_TAG }}" --allow-empty
-          git remote set-url origin "https://${{ secrets.PAT }}@github.com/yzzeee/istory-service"
-          git push origin main -f  # force push 시도
+          echo "https://oauth2:${{ secrets.PAT }}@github.com" > ~/.git-credentials
+          git config --global credential.helper store
+          git push origin main`
