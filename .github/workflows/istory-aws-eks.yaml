@@ -125,7 +125,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "Update image tag to ${{ env.DOCKER_TAG }}"
-          git remote set-url origin https://${{ secrets.PAT }}@github.com/dangtong-s-inc/istory-service.git # 바꾸기 
+          git commit -am "Update image tag to ${{ steps.slug.outputs.sha8 }}"
+          git remote set-url origin https://${{ secrets.PAT }}@github.com/yzzeee/istory-service.git
+          git push origin main
           
-          git push origin main`
