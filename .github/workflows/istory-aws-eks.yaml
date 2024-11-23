@@ -108,6 +108,7 @@ jobs:
           repository: yzzeee/istory-service  
           ref: main
           path: .
+          token: ${{ secrets.PAT }} 
       
       # 이미지 태그 업데이트
       - name: 11.쿠버네티스 매니페스트 파일 이미지 태그 업데이트
@@ -123,8 +124,8 @@ jobs:
       # 변경사항 커밋 및 푸시
       - name: 12.서비스 리포지토리 변경사항 커밋 및 푸시
         run: |
-          git config --global user.name "yeonji.lee"
-          git config --global user.email "goooooodgood@gmail.com"
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git commit -am "Update image tag to ${{ env.DOCKER_TAG }}" --allow-empty
           echo "https://oauth2:${{ secrets.PAT }}@github.com" > ~/.git-credentials
           git config --global credential.helper store
