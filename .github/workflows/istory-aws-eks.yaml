@@ -125,7 +125,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "Update image tag to ${{ env.DOCKER_TAG }}" --allow-empty
-          echo "https://oauth2:${{ secrets.PAT }}@github.com" > ~/.git-credentials
-          git config --global credential.helper store
+          git commit -am "Update image tag to ${{ env.DOCKER_TAG }}"
+          git remote set-url origin https://${{ secrets.PAT }}@github.com/dangtong-s-inc/istory-service.git # 바꾸기 
+          
           git push origin main`
